@@ -3,6 +3,7 @@ package com.example.band_like.service;
 import com.example.band_like.api.AlbumClient;
 import com.example.band_like.api.BoardClient;
 import com.example.band_like.domain.entity.Like;
+import com.example.band_like.domain.request.LikeCountUpdateRequest;
 import com.example.band_like.domain.request.LikeRequest;
 import com.example.band_like.kafka.AlbumProducer;
 import com.example.band_like.kafka.BoardProducer;
@@ -31,18 +32,32 @@ public class LikeService {
           if (like.isPresent()) {
               likeRepository.delete(like.get());
 
-              if (target.equals("board")) {
+              LikeCountUpdateRequest likeCountUpdateRequest = LikeCountUpdateRequest.builder()
+                      .count(-1)
+                      .boardId(likeRequest.getTargetId())
+                      .build();
 
+              if (target.equals("board")) {
+                    boardProducer.send(likeCountUpdateRequest);
                   // boardClient.updateLikeCount(likeRequest.getTargetId(), - 1);
               } else {
+                  albumProducer.send(likeCountUpdateRequest);
                  // albumClient.updateLikeCount(likeRequest.getTargetId(), - 1);
               }
         } else {
               likeRepository.save(Like.builder().targetId(likeRequest.getTargetId()).memberId(likeRequest.getMemberId()).build());
+
+              LikeCountUpdateRequest likeCountUpdateRequest = LikeCountUpdateRequest.builder()
+                      .count(1)
+                      .boardId(likeRequest.getTargetId())
+                      .build();
+
               if (target.equals("board")) {
-                  boardClient.updateLikeCount(likeRequest.getTargetId(), 1);
+                  boardProducer.send(likeCountUpdateRequest);
+                  //boardClient.updateLikeCount(likeRequest.getTargetId(), 1);
               } else {
-                  albumClient.updateLikeCount(likeRequest.getTargetId(),  1);
+                  albumProducer.send(likeCountUpdateRequest);
+                  //albumClient.updateLikeCount(likeRequest.getTargetId(),  1);
               }
         }
     }
