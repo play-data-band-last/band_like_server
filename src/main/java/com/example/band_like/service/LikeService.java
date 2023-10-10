@@ -26,39 +26,44 @@ public class LikeService {
 
       //'좋아요'
     @Transactional
-      public void likeCount(LikeRequest likeRequest) {
+    public void likeCount(LikeRequest likeRequest) {
           Optional<Like> like = likeRepository.findByTargetIdAndMemberId(likeRequest.getTargetId(), likeRequest.getMemberId());
           String target = likeRequest.getTarget();
           if (like.isPresent()) {
-              likeRepository.delete(like.get());
+              likeDelete(likeRequest, like, target);
+          } else {
+              likeInsert(likeRequest, target);
+          }
+    }
 
-              LikeCountUpdateRequest likeCountUpdateRequest = LikeCountUpdateRequest.builder()
-                      .count(-1)
-                      .boardId(likeRequest.getTargetId())
-                      .build();
+    private void likeInsert(LikeRequest likeRequest, String target) {
+        likeRepository.save(Like.builder().targetId(likeRequest.getTargetId()).memberId(likeRequest.getMemberId()).build());
 
-              if (target.equals("board")) {
-                    boardProducer.send(likeCountUpdateRequest);
-                  // boardClient.updateLikeCount(likeRequest.getTargetId(), - 1);
-              } else {
-                  albumProducer.send(likeCountUpdateRequest);
-                 // albumClient.updateLikeCount(likeRequest.getTargetId(), - 1);
-              }
+        LikeCountUpdateRequest likeCountUpdateRequest = LikeCountUpdateRequest.builder()
+                .count(1)
+                .boardId(likeRequest.getTargetId())
+                .build();
+
+        if (target.equals("board")) {
+            boardProducer.send(likeCountUpdateRequest);
         } else {
-              likeRepository.save(Like.builder().targetId(likeRequest.getTargetId()).memberId(likeRequest.getMemberId()).build());
+            albumProducer.send(likeCountUpdateRequest);
+        }
+    }
 
-              LikeCountUpdateRequest likeCountUpdateRequest = LikeCountUpdateRequest.builder()
-                      .count(1)
-                      .boardId(likeRequest.getTargetId())
-                      .build();
 
-              if (target.equals("board")) {
-                  boardProducer.send(likeCountUpdateRequest);
-                  //boardClient.updateLikeCount(likeRequest.getTargetId(), 1);
-              } else {
-                  albumProducer.send(likeCountUpdateRequest);
-                  //albumClient.updateLikeCount(likeRequest.getTargetId(),  1);
-              }
+    private void likeDelete(LikeRequest likeRequest, Optional<Like> like, String target) {
+        likeRepository.delete(like.get());
+
+        LikeCountUpdateRequest likeCountUpdateRequest = LikeCountUpdateRequest.builder()
+                .count(-1)
+                .boardId(likeRequest.getTargetId())
+                .build();
+
+        if (target.equals("board")) {
+            boardProducer.send(likeCountUpdateRequest);
+        } else {
+            albumProducer.send(likeCountUpdateRequest);
         }
     }
 
