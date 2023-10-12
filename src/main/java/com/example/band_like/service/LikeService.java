@@ -36,7 +36,7 @@ public class LikeService {
           }
     }
 
-    private void likeInsert(LikeRequest likeRequest, String target) {
+    public void likeInsert(LikeRequest likeRequest, String target) {
         likeRepository.save(Like.builder().targetId(likeRequest.getTargetId()).memberId(likeRequest.getMemberId()).build());
 
         LikeCountUpdateRequest likeCountUpdateRequest = LikeCountUpdateRequest.builder()
@@ -52,7 +52,7 @@ public class LikeService {
     }
 
 
-    private void likeDelete(LikeRequest likeRequest, Optional<Like> like, String target) {
+    public void likeDelete(LikeRequest likeRequest, Optional<Like> like, String target) {
         likeRepository.delete(like.get());
 
         LikeCountUpdateRequest likeCountUpdateRequest = LikeCountUpdateRequest.builder()
@@ -65,6 +65,10 @@ public class LikeService {
         } else {
             albumProducer.send(likeCountUpdateRequest);
         }
+    }
+
+    public void memberDeleteHandler(Long userId){
+        likeRepository.DeleteMember(userId);
     }
 
 }

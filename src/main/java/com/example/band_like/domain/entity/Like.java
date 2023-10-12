@@ -11,7 +11,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(
         name = "likes",
-        indexes = @Index(name = "idx_target_member", columnList = "targetId,memberId")
+        indexes = {@Index(name = "idx_target_member", columnList = "targetId,memberId"),
+        @Index(name = "memberIdIndex", columnList = "memberId")}
 )
 public class Like {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

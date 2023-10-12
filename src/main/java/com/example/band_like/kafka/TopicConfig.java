@@ -15,11 +15,18 @@ import org.springframework.util.backoff.FixedBackOff;
 public class TopicConfig {
     public final static String album = "album";
     public final static String board = "board";
+    public final static String memberDelete = "memberDelete";
 
     @Bean
     public NewTopic albumTopic() {
         return new NewTopic(album, 1, (short)1);
     }
+
+    @Bean
+    public NewTopic memberDeleteTopic() {
+        return new NewTopic(memberDelete, 1, (short)1);
+    }
+
 
     @Bean
     public NewTopic boardTopic() {
