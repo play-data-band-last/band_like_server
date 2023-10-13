@@ -1,5 +1,7 @@
 package com.example.band_like.kafka;
 
+import com.example.band_like.domain.request.LikeRequest;
+import com.example.band_like.service.LikeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.DltHandler;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -10,11 +12,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaListner {
 
+    private final LikeService likeService;
+
     @RetryableTopic
     @KafkaListener(topics = TopicConfig.memberDelete)
-    public void listen(Long userID) {
-
+    public void memberDeleteListener(LikeRequest likeRequest) {
+        likeService.memberDeleteHandler(likeRequest.getMemberId());
     }
+
 
     @DltHandler
     public void processDltMessage(String dltMessage) {
