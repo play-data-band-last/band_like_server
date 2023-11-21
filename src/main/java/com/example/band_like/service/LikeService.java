@@ -1,7 +1,5 @@
 package com.example.band_like.service;
 
-import com.example.band_like.api.AlbumClient;
-import com.example.band_like.api.BoardClient;
 import com.example.band_like.domain.entity.Like;
 import com.example.band_like.domain.request.LikeCountUpdateRequest;
 import com.example.band_like.domain.request.LikeRequest;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

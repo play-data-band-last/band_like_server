@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: 34.42.237.145:9093
     consumer:
       auto-offset-reset: latest
       group-id: like
@@ -13,7 +13,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   datasource:
-    url: jdbc:mysql://localhost:3306/likes?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://34.42.237.145:3306/likes?serverTimezone=Asia/Seoul
     username: root
     password: 1234
   jpa:
@@ -28,21 +28,21 @@ spring:
 
 
 server:
-  port: 0
+  port: 8000
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,beans,refresh
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
-  instance:
-    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
-
-
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: health,beans,refresh
+#
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://localhost:8761/eureka
+#  instance:
+#    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+#
+#
 
 
